@@ -193,13 +193,21 @@ public class FNode extends Node {
 			if(msg instanceof TableMsg) {
 				TableMsg m = (TableMsg) msg;
 				if(this.routingTable.vizinhos.indexOf(m.sender) == -1) {
-					this.routingTable.noDestino.add(m.sender);
-					this.routingTable.vizinhos.add(m.sender);
-					this.routingTable.ipDestino.add(((FNode)m.sender).ip);
-					this.routingTable.mascaraRede.add(((FNode)m.sender).mascaraRede);
-					this.routingTable.numeroSalto.add(1);
-					this.routingTable.nextHop.add(m.sender);
-					this.routingTable.timersVizinho.add(180);
+					if(this.routingTable.noDestino.indexOf(m.sender) == -1){
+						this.routingTable.noDestino.add(m.sender);
+						this.routingTable.vizinhos.add(m.sender);
+						this.routingTable.ipDestino.add(((FNode)m.sender).ip);
+						this.routingTable.mascaraRede.add(((FNode)m.sender).mascaraRede);
+						this.routingTable.numeroSalto.add(1);
+						this.routingTable.nextHop.add(m.sender);
+						this.routingTable.timersVizinho.add(180);
+					} else {
+						this.routingTable.vizinhos.add(m.sender);
+						this.routingTable.numeroSalto.set(this.routingTable.noDestino.indexOf(m.sender),1);
+						this.routingTable.updateNextHop(m.sender,m.sender);
+						this.routingTable.timersVizinho.add(180);
+
+					}
 				} 
 				RoutingTable rt = m.routingTable;
 				for(Node n : rt.noDestino) {
